@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "104438094323",
+    "firebase_url": "https://swift-dc222-default-rtdb.firebaseio.com",
+    "project_id": "swift-dc222",
+    "storage_bucket": "swift-dc222.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:104438094323:android:d6a7916dbf38fd4585da86",
+        "android_client_info": {
+          "package_name": "com.my"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrMyGFiz8_vwLOff88OM1YHgn8f-hRrxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
