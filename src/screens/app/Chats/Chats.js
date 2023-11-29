@@ -16,7 +16,7 @@ const Chats = () => {
       setUser(authenticatedUser);
     });
 
-    const chatsRef = database().ref(`users/${user?.uid}/chats`);
+    const chatsRef = database().ref(`Users/${user?.uid}/chats`);
 
     const unsubscribeChats = chatsRef.on('value', (snapshot) => {
       const data = snapshot.val();
@@ -38,7 +38,7 @@ const Chats = () => {
   return (
     <View style={{flex:1, height:'90%'}}>
       <Header lable={'Chats'}/>
-      <Text>Welcome, {user ? user.email : 'Guest'}</Text>
+      <Text>Welcome, {user ? user.email : 'Guest'}, chat screen</Text>
       <FlatList
         data={chats}
         keyExtractor={(item) => item.chatRoomId}
