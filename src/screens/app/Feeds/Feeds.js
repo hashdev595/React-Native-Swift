@@ -1,69 +1,22 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  ActivityIndicator,
-  RefreshControl,
-} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {FeedCards, Header} from '../../../components';
-import {appIcons, appImages} from '../../../assets';
 import database from '@react-native-firebase/database';
-import {useNavigation} from '@react-navigation/native';
-
-// const data = [
-//   {
-//     id: 0,
-//     name: 'Hashim',
-//     location: 'Lahore',
-//     img: appIcons.person,
-//     postImg: appImages.binance,
-//     content: `Binance Expands Account Statement Function. With our VIP and institutional clients in mind, we’ve upgraded the account statement function...`,
-//   },
-//   {
-//     id: 1,
-//     name: 'Hashim',
-//     location: 'Lahore',
-//     img: appIcons.person,
-//     postImg: appImages.binance,
-//     content: `Binance Expands Account Statement Function. With our VIP and institutional clients in mind, we’ve upgraded the account statement function...`,
-//   },
-//   {
-//     id: 2,
-//     name: 'Hashim',
-//     location: 'Lahore',
-//     img: appIcons.person,
-//     postImg: appImages.binance,
-//     content: `Binance Expands Account Statement Function. With our VIP and institutional clients in mind, we’ve upgraded the account statement function...`,
-//   },
-//   {
-//     id: 3,
-//     name: 'Hashim',
-//     location: 'Lahore',
-//     img: appIcons.person,
-//     postImg: appImages.binance,
-//     content: `Binance Expands Account Statement Function. With our VIP and institutional clients in mind, we’ve upgraded the account statement function...`,
-//   },
-//   {
-//     id: 4,
-//     name: 'Hashim',
-//     location: 'Lahore',
-//     img: appIcons.person,
-//     postImg: appImages.binance,
-//     content: `Binance Expands Account Statement Function. With our VIP and institutional clients in mind, we’ve upgraded the account statement function...`,
-//   },
-// ];
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {appIcons} from '../../../assets';
+import {FeedCards, Header} from '../../../components';
 
 const Feeds = () => {
   const navigation = useNavigation();
   const [likedPosts, setLikedPosts] = useState([]);
   const [followedUsers, setFollowedUsers] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [captions, setCaptions] = useState([])
-  // const [image, setImage] = useState([])
   const [appPosts, setAppPosts] = useState([]);
 
   const fetchAllUserPosts = async () => {
@@ -79,46 +32,47 @@ const Feeds = () => {
       usersSnapshot.forEach(userSnapshot => {
         const userUid = userSnapshot.key; // User ID
         const userPostsRef = database().ref(`/Users/${userUid}/posts`);
+        const userNameRef = database().ref(`/Users/${userUid}/name`);
 
-        // Add the promise to the array
-        promises.push(
-          userPostsRef.once('value', snapshots =>
-            console.log('snapshots', snapshots),
-          ),
-        );
+        // Add the promises to the array
+        promises.push(userPostsRef.once('value'), userNameRef.once('value'));
       });
 
       // Wait for all promises to resolve
       const snapshots = await Promise.all(promises);
-
+      console.log('snap', snapshots);
       const allPosts = [];
 
-      // Iterate through each user's posts
-      snapshots.forEach(userPostsSnapshot => {
+      // Iterate through each user's data
+      for (let i = 0; i < snapshots.length; i += 2) {
+        const userPostsSnapshot = snapshots[i];
+        const userNameSnapshot = snapshots[i + 1];
+
+        const userName = userNameSnapshot.val();
         userPostsSnapshot.forEach(postSnapshot => {
           const post = postSnapshot.val();
+          // Add the user name to the post object
+          post.userName = userName;
           allPosts.push(post);
         });
-      });
-      setLoading(false);
+      }
+
       setAppPosts(allPosts);
+      setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error(error);
     }
   };
 
-  console.log('image', appPosts);
-  // console.log('caption', captions)
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    const sub = navigation.addListener(() => 'focus', fetchAllUserPosts());
-    sub();
-  }, [navigation]); // The empty dependency array ensures that this effect runs once when the component mounts
+    if (isFocused) {
+      return navigation.addListener('focus', fetchAllUserPosts);
+    }
+  }, [navigation]);
 
-  console.log('appPosts:', appPosts);
-
-  console.log('liked:', likedPosts);
-  console.log('follow:', followedUsers);
   const postHeight = 340;
 
   const handleLikePress = postId => {
@@ -158,39 +112,43 @@ const Feeds = () => {
           <RefreshControl onRefresh={fetchAllUserPosts} refreshing={loading} />
         }
         data={appPosts}
-        keyExtractor={item => item.postId}
+        keyExtractor={item => item.id}
         pagingEnabled={false}
         snapToInterval={postHeight}
         decelerationRate="fast"
-        renderItem={({item}) => (
-          <FeedCards
-            style={{
-              height: 25,
-              width: 27,
-              tintColor: likedPosts.includes(item.id) ? 'red' : 'black',
-            }}
-            likePress={() => handleLikePress(item.id)}
-            content={item.caption ? item.caption : 'none'}
-            location={item.location ? item.location : 'Lahore'}
-            name={item.name ? item.name : 'Hashim'}
-            postImg={item.imgUrl}
-            profileImg={item.img ? item.img : appIcons.person}
-            flwText={followedUsers.includes(item.id) ? 'Follow' : 'Following'}
-            flwTextStyle={{
-              fontSize: 12,
-              color: followedUsers.includes(item.id) ? '#ffff' : 'black',
-            }}
-            followStyle={{
-              backgroundColor: followedUsers.includes(item.id)
-                ? '#1F41BB'
-                : '#ffff',
-              borderWidth: followedUsers.includes(item.id) ? 0 : 1,
-              borderColor: '#1F41BB',
-              overflow: 'hidden',
-            }}
-            followPress={() => handleFollowPress(item.id)}
-          />
-        )}
+        renderItem={({item}) => {
+          console.log('item', item?.video);
+          return (
+            <FeedCards
+              style={{
+                height: 25,
+                width: 27,
+                tintColor: likedPosts.includes(item.id) ? 'red' : 'black',
+              }}
+              likePress={() => handleLikePress()}
+              video={item?.video}
+              content={item.caption ? item.caption : null}
+              location={item.location ? item.location : 'Lahore'}
+              name={item.userName}
+              image={item.imgUrl}
+              profileImg={item.img ? item.img : appIcons.person}
+              flwText={followedUsers.includes(item.id) ? 'Follow' : 'Following'}
+              flwTextStyle={{
+                fontSize: 12,
+                color: followedUsers.includes(item.id) ? '#ffff' : 'black',
+              }}
+              followStyle={{
+                backgroundColor: followedUsers.includes(item.id)
+                  ? '#1F41BB'
+                  : '#ffff',
+                borderWidth: followedUsers.includes(item.id) ? 0 : 1,
+                borderColor: '#1F41BB',
+                overflow: 'hidden',
+              }}
+              followPress={() => handleFollowPress(item.id)}
+            />
+          );
+        }}
       />
       <TouchableOpacity
         onPress={() => {

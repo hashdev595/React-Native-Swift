@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Image, KeyboardAvoidingView} from 'react-native';
+import {View, Text, StyleSheet, Image, KeyboardAvoidingView, ActivityIndicator} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {AppButton} from '../../../components/appButton/AppButton';
 import {AppInput, Background} from '../../../components';
-import {appIcons} from '../../../assets';
+import {appIcons, appLotify} from '../../../assets';
 import auth from '@react-native-firebase/auth'
 
 const Login = ({navigation}) => {
@@ -58,6 +58,7 @@ const Login = ({navigation}) => {
           <AppInput onChangeText={text => setEmail(text)} value={email} placeholder={'Email'} />
           <AppInput onChangeText={text => setPassword(text)} value={password} secureTextEntry={true} placeholder={'Password'} />
           <Text style={{color:'red'}}>{error}</Text>
+          {loading ? <ActivityIndicator color={'#1F41BB'}/>: null}
           <Text
             style={{textAlign: 'right', marginVertical: 30, color: '#1F41BB'}}>
             Forgot your password?

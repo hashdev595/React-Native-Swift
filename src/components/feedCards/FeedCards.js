@@ -5,11 +5,22 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import VideoPlayer from 'react-native-video-controls'
 
-const FeedCards = ({profileImg, postImg, name, location, content, likePress, style, followPress, followStyle,flwTextStyle, flwText}) => {
-
- 
-
+const FeedCards = ({
+  profileImg,
+  name,
+  location,
+  content,
+  likePress,
+  style,
+  followPress,
+  followStyle,
+  flwTextStyle,
+  flwText,
+  image,
+  video,
+}) => {
   return (
     <View style={styles.cardContainer}>
       <View style={styles.cardContent}>
@@ -30,26 +41,37 @@ const FeedCards = ({profileImg, postImg, name, location, content, likePress, sty
           }}>
           <TouchableOpacity
             onPress={followPress}
-            style={[
-              styles.followButton,
-              
-               followStyle
-              ,
-            ]}>
-            <Text style={flwTextStyle}>
-              {flwText}
-            </Text>
+            style={[styles.followButton, followStyle]}>
+            <Text style={flwTextStyle}>{flwText}</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <Text style={{color: 'black', marginVertical: 10}}>{content}</Text>
+      {content &&
+        <Text style={{color: 'black', marginVertical: 10}}>{content}</Text>}
       <View style={styles.imageContainer}>
-        <Image
-          resizeMode="contain"
-          style={{width: wp('90%'), height: hp('40%'), marginBottom:15}}
-          source={{uri:postImg}}
-        />
+        {image && (
+          <Image
+            resizeMode="contain"
+            style={{width: wp('90%'), height: hp('40%'), marginBottom: 15}}
+            source={{uri: image}}
+          />
+        )}
       </View>
+      
+        {video && (
+          <View style={styles.videoContainer}>
+          <VideoPlayer
+            source={{uri: video}}
+            ref={ref => {
+              this.player = ref;
+            }}
+            onBuffer={this.onBuffer}
+            onError={this.videoError}
+            style={styles.backgroundVideo}
+          />
+           </View>
+        )}
+     
       <View style={styles.responseContainer}>
         <View
           style={{
@@ -60,10 +82,7 @@ const FeedCards = ({profileImg, postImg, name, location, content, likePress, sty
             height: 30,
           }}>
           <TouchableOpacity onPress={likePress}>
-            <Image
-              style={style}
-              source={appIcons.heart}
-            />
+            <Image style={style} source={appIcons.heart} />
           </TouchableOpacity>
           <TouchableOpacity>
             <Image style={{height: 25, width: 26}} source={appIcons.comment} />
@@ -95,7 +114,6 @@ const styles = StyleSheet.create({
   cardContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: 'yellow',
     justifyContent: 'space-between',
   },
   contentHeader: {
@@ -117,4 +135,13 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 4,
   },
+  videoContainer: {
+    height: hp('40%'),
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginVertical:10
+  },
+  backgroundVideo:{
+  }
 });

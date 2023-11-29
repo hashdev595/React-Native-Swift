@@ -4,8 +4,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Feeds from '../../screens/app/Feeds/Feeds';
 import Store from '../../screens/app/Store/Store';
 import Profile from '../../screens/app/Profile/Profile';
-import Messages from '../../screens/app/Messages/Messages';
 import { View } from 'react-native';
+import Chats from '../../screens/app/Chats/Chats';
+import Messages from '../../screens/app/Chats/Messages';
 
 
 const Tab = createBottomTabNavigator();
@@ -51,7 +52,7 @@ const BottomTabNavigator = () => {
             case 'Profile':
               iconName = 'person-circle-outline';
               break;
-            case 'Messages':
+            case 'Chats':
               iconName = 'chatbubbles-outline';
               break;
             default:
@@ -81,8 +82,8 @@ const BottomTabNavigator = () => {
       />
       <Tab.Screen
         options={{tabBarLabel: () => null}}
-        name="Messages"
-        component={Messages}
+        name="Chats"
+        component={Chats}
       />
     </Tab.Navigator></View>
   );

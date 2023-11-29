@@ -21,3 +21,6 @@ export const appIcons = {
    binance: require('./images/binance.png')
   };
   
+  export const appLotify = {
+    loading : require('./lotify/Animation - 1701239231656.json')
+  }
