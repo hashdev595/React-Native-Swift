@@ -5,6 +5,7 @@ import CreatePost from '../../screens/app/CreatePost/CreatePost';
 import Messages from '../../screens/app/Chats/Messages'
 import Contacts from '../../screens/app/Chats/Contacts';
 import Chats from '../../screens/app/Chats/Chats';
+import Api from '../../screens/app/Api/Api';
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -18,7 +19,7 @@ const AppStack = () => {
       <Stack.Screen name={'Messages'} component={Messages}/>
       <Stack.Screen name={'Contacts'} component={Contacts}/>
       <Stack.Screen name={'Chats'} component={Chats}/>
-
+      <Stack.Screen name={'Api'} component={Api}/>
     </Stack.Navigator>
   );
 };

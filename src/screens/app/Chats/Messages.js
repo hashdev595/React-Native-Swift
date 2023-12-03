@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import { Header } from '../../../components';
 
 const Messages = ({ route }) => {
   const [user, setUser] = useState(null);
@@ -45,6 +46,7 @@ const Messages = ({ route }) => {
 
   return (
     <View style={{ flex: 1 }}>
+      {/* <Header lable={user.email}/> */}
       <Text>Welcome, {user ? user.email : 'Guest'}</Text>
       <Text>Chat Room: {chatRoomName}</Text>
       <GiftedChat
