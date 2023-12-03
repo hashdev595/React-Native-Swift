@@ -17,7 +17,8 @@ const Contacts = ({navigation}) => {
     const unsubscribeUsers = usersRef.on('value', snapshot => {
       const data = snapshot.val();
       if (data) {
-        const usersArray = Object.keys(data).map(key => data[key]);
+        const usersArray = Object.keys(data).map(key => data[key])
+        .filter(user => user.userUid !== auth().currentUser.uid);
         setUsers(usersArray);
       }
     });
